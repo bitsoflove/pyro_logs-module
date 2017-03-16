@@ -1,0 +1,9 @@
+{
+    "name": "bitsoflove/logs-module",
+    "type": "streams-addon",
+    "autoload": {
+        "psr-4": {
+            "Bitsoflove\\LogsModule\\": "src/"
+        }
+    }
+}
