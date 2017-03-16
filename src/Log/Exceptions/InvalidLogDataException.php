@@ -1,4 +1,4 @@
-<?php namespace Bitsoflove\LogsModule\Exceptions;
+<?php namespace Bitsoflove\LogsModule\Log\Exceptions;
 
 class InvalidLogDataException extends \Exception {
 

@@ -1,7 +1,7 @@
 <?php namespace Bitsoflove\LogsModule\Log;
 
 use Anomaly\UsersModule\User\UserModel;
-use Bitsoflove\LogsModule\Exceptions\InvalidLogDataException;
+use Bitsoflove\LogsModule\Log\Exceptions\InvalidLogDataException;
 use Bitsoflove\LogsModule\Log\Contract\LogInterface;
 use Anomaly\Streams\Platform\Model\Logs\LogsLogsEntryModel;
 use Illuminate\Support\Facades\Log;
@@ -40,7 +40,7 @@ class LogModel extends LogsLogsEntryModel implements LogInterface
             }
 
             if(!$this->isJson($value)) {
-                throw new InvalidLogDataException("Cannot create JSON data for log entry - invalid input", $data);
+                throw new InvalidLogDataException("Cannot create JSON data for log entry - invalid input", $value);
             }
 
         } catch(\Exception $e) {
