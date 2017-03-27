@@ -27,7 +27,7 @@ class LogsController extends AdminController
      */
     public function export(LogTableBuilder $table) {
         try {
-            \Debugbar::disable();
+            $this->disableDebugbar();
 
             $cmd = app(ExportLogsCommandInterface::class);
             $csv = $cmd->handle();
@@ -47,6 +47,15 @@ class LogsController extends AdminController
                 'code' => 500,
                 'message' => $e->getMessage()
             ], 500, [], JSON_PRETTY_PRINT);
+        }
+    }
+
+    private function disableDebugbar()
+    {
+        $isEnabled = config('debugbar.enabled');
+
+        if($isEnabled) {
+            \Debugbar::disable();
         }
     }
 }
