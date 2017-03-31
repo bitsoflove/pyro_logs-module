@@ -11,31 +11,35 @@ use Illuminate\Foundation\Application;
 
 class LogsModuleServiceProvider extends AddonServiceProvider
 {
+    protected $bindings = [
+        LogRepositoryInterface::class => LogRepository::class,
+    ];
+
+    protected $commands = [
+        ExportLogsConsoleCommand::class,
+    ];
+
+    protected $listeners = [
+        // we might want to define some default listeners here (user logged in / user logged out)
+    ];
+
     public function __construct(Application $app, Addon $addon)
     {
-        $this->listeners = $this->listeners + config('bitsoflove.module.logs::logs.listeners');
-        $this->bindings = $this->bindings + config('bitsoflove.module.logs::logs.bindings');
+        // allow for listener and binding overrides
+
+        $this->listeners = array_merge($this->listeners, config('bitsoflove.module.logs::logs.listeners'));
+        $this->bindings = array_merge($this->bindings, config('bitsoflove.module.logs::logs.bindings'));
 
         parent::__construct($app, $addon);
     }
 
     protected $plugins = [];
 
-    protected $commands = [
-        ExportLogsConsoleCommand::class,
-    ];
-
     protected $routes = [];
 
     protected $middleware = [];
 
-    protected $listeners = [];
-
     protected $aliases = [];
-
-    protected $bindings = [
-        LogRepositoryInterface::class => LogRepository::class,
-    ];
 
     protected $providers = [];
 
