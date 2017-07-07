@@ -11,7 +11,7 @@ class GetMostRecentLogExportCommand
      */
     public function handle() {
 
-        $dir = storage_path('temp/logs');
+        $dir = storage_path('exports/logs');
         $mostRecentFile = $this->getMostRecentFileInDirectory($dir);
         $fullFilename = "$dir/$mostRecentFile";
 

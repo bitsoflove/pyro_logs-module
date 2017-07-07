@@ -31,7 +31,7 @@ class ExportLogsConsoleCommand extends Command
     }
 
     private function getExportPath() {
-        $path = storage_path('temp/logs/' . 'logs-export-' . date('Y-m-d H:i:s') . '.csv');
+        $path = storage_path('exports/logs/' . 'logs-export-' . date('Y-m-d H:i:s') . '.csv');
         return $path;
     }
 
@@ -45,7 +45,7 @@ class ExportLogsConsoleCommand extends Command
 
     private function cleanupPreviousExports()
     {
-        $folder = storage_path('temp/logs');
+        $folder = storage_path('exports/logs');
         $twoDays = (60 * 24 * 2);
         return $this->clearFilesOlderThan($twoDays, $folder);
     }
