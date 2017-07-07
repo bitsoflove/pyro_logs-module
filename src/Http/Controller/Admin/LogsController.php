@@ -31,7 +31,7 @@ class LogsController extends AdminController
             $cmd = $this->getMostRecentLogExportCommand();
             $csv = $cmd->handle();
 
-            return $csv->output("puratos-customer-needs-logs-export.csv");
+            return $csv->output("logs.csv");
         } catch(\Exception $e) {
             Log::error($e);
 
