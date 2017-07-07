@@ -1,7 +1,6 @@
 <?php namespace Bitsoflove\LogsModule\Http\Controller\Admin;
 
-use Bitsoflove\LogsModule\Commands\ExportLogsCommand;
-use Bitsoflove\LogsModule\Commands\ExportLogsCommandInterface;
+use Bitsoflove\LogsModule\Commands\GetMostRecentLogExportCommand;
 use Bitsoflove\LogsModule\Log\Table\LogTableBuilder;
 use Anomaly\Streams\Platform\Http\Controller\AdminController;
 use Illuminate\Support\Facades\Log;
@@ -29,11 +28,10 @@ class LogsController extends AdminController
         try {
             $this->disableDebugbar();
 
-            $cmd = app(ExportLogsCommandInterface::class);
+            $cmd = $this->getMostRecentLogExportCommand();
             $csv = $cmd->handle();
 
-            $path = storage_path('temp/' . 'logs-export-' . date('Y-m-d H:i:s') . '.csv');
-            $csv->output($path);
+            return $csv->output("puratos-customer-needs-logs-export.csv");
         } catch(\Exception $e) {
             Log::error($e);
 
@@ -57,5 +55,14 @@ class LogsController extends AdminController
         if($isEnabled) {
             \Debugbar::disable();
         }
+    }
+
+    /**
+     * @return GetMostRecentLogExportCommand
+     */
+    private function getMostRecentLogExportCommand()
+    {
+        $command = app(GetMostRecentLogExportCommand::class);
+        return $command;
     }
 }

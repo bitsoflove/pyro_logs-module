@@ -1,6 +1,7 @@
 <?php namespace Bitsoflove\LogsModule\Commands;
 
 use Bitsoflove\LogsModule\Log\Contract\LogInterface;
+use League\Csv\Writer;
 
 /**
  * When you're writing your own export implementation, you'll have to implement these 4 steps:
@@ -45,7 +46,7 @@ interface ExportLogsCommandInterface
      * Handle your export. By default this package will export to CSV.
      * When rolling your own export logic, you'll have to call the other implemented methods yourself
      *
-     * @return mixed
+     * @return Writer
      */
-    public function handle();
+    public function handle($path);
 }

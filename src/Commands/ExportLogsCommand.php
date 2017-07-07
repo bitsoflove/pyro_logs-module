@@ -4,6 +4,9 @@ use Anomaly\Streams\Platform\Entry\EntryCollection;
 use Bitsoflove\LogsModule\Log\Contract\LogInterface;
 use Bitsoflove\LogsModule\Log\LogCollection;
 use Bitsoflove\LogsModule\Log\LogModel;
+use Illuminate\Support\Facades\Log;
+use League\Csv\AbstractCsv;
+use League\Csv\Writer;
 
 
 class ExportLogsCommand implements ExportLogsCommandInterface
@@ -28,26 +31,30 @@ class ExportLogsCommand implements ExportLogsCommandInterface
 
     public function getColumnValue(LogInterface $log, $column)
     {
-        switch($column) {
-            case 'user': {
-                return isset($log->user->email) ? $log->user->email : '';
+        try {
+            switch($column) {
+                case 'user': {
+                    return (string) isset($log->user->email) ? $log->user->email : '';
+                }
             }
-        }
 
-        return isset($log->$column) ? $log->$column : '';
+            return (string) isset($log->$column) ? $log->$column : '';
+        } catch(\Exception $e) {
+            Log::error($e);
+        }
     }
 
-    public function handle()
+    public function handle($path)
     {
         $logs = $this->getLogs();
         $columns = $this->getColumns();
         $transformed = $this->transformData($logs, $columns);
-        $csv = $this->buildLogsExportCsv($transformed, $columns);
+        $csv = $this->buildLogsExportCsv($path, $transformed, $columns);
         return $csv;
     }
 
-    protected function buildLogsExportCsv($transformed, $fields) {
-        $csv = $this->getCsv();
+    protected function buildLogsExportCsv($path, $transformed, $fields) {
+        $csv = $this->getCsv($path);
 
         $csv->insertOne($fields);
         foreach ($transformed as $mapped) {
@@ -57,10 +64,13 @@ class ExportLogsCommand implements ExportLogsCommandInterface
         return $csv;
     }
 
-    protected function getCsv() {
-        $file = new \SplTempFileObject();
-        $file->setCsvControl(';');
-        $csv = \League\Csv\Writer::createFromFileObject($file);
+    /**
+     * @return Writer
+     */
+    protected function getCsv($path) {
+        $csv = Writer::createFromPath($path, 'w');
+        $csv->setDelimiter(';');
+
         return $csv;
     }
 

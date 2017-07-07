@@ -1,6 +1,7 @@
 <?php  namespace Bitsoflove\LogsModule\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 
 class ExportLogsConsoleCommand extends Command
@@ -16,20 +17,55 @@ class ExportLogsConsoleCommand extends Command
 
     public function handle()
     {
-        $cmd = app(ExportLogsCommand::class);
-        $csv = $cmd->handle();
+        $cmd = $this->getExportLogsCommand();
 
-        // save the csv temporarily
         $path = $this->getExportPath();
 
-        $csv->output($path);
+        $csv = $cmd->handle($path);
+
+        // if all was successful, we can remove the previous log(s)
+        $this->cleanupPreviousExports();
 
         $this->info($path);
         return $csv;
     }
 
     private function getExportPath() {
-        $path = storage_path('temp/' . 'logs-export-' . date('Y-m-d H:i:s') . '.csv');
+        $path = storage_path('temp/logs/' . 'logs-export-' . date('Y-m-d H:i:s') . '.csv');
         return $path;
+    }
+
+    /**
+     * @return ExportLogsCommandInterface
+     */
+    private function getExportLogsCommand()
+    {
+        return app(ExportLogsCommandInterface::class);
+    }
+
+    private function cleanupPreviousExports()
+    {
+        $folder = storage_path('temp/logs');
+        $twoDays = (60 * 24 * 2);
+        return $this->clearFilesOlderThan($twoDays, $folder);
+    }
+
+
+    private function clearFilesOlderThan($minutes, $tmpFolder)
+    {
+        if (file_exists($tmpFolder)) {
+            foreach (new \DirectoryIterator($tmpFolder) as $fileInfo) {
+                if ($fileInfo->isDot()) {
+                    continue;
+                }
+                if ($fileInfo->isFile() && time() - $fileInfo->getCTime() >= 60 * $minutes) {
+                    $success = unlink($fileInfo->getRealPath());
+
+                    if(!$success) {
+                        Log::error("Failed to delete " . $fileInfo->getRealPath());
+                    }
+                }
+            }
+        }
     }
 }
