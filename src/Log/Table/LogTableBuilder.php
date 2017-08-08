@@ -65,7 +65,7 @@ class LogTableBuilder extends TableBuilder
                     'users_users.email as email',
                 ]);
 
-                $query->orderBy('logs_logs.id', 'desc');
+                $query->orderBy('logs_logs.created_at', 'desc');
             }
         });
     }
