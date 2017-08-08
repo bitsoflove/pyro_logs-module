@@ -10,7 +10,6 @@ class GetMostRecentLogExportCommand
      * @return Reader
      */
     public function handle() {
-
         $dir = storage_path('exports/logs');
         $mostRecentFile = $this->getMostRecentFileInDirectory($dir);
         $fullFilename = "$dir/$mostRecentFile";
@@ -40,6 +39,7 @@ class GetMostRecentLogExportCommand
     private function getCsvReader($csvFileLocation)
     {
         $csv = Reader::createFromPath($csvFileLocation);
+        $csv->setOutputBOM(Reader::BOM_UTF8);
         return $csv;
     }
 }
