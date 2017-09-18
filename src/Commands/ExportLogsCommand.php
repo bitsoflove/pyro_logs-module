@@ -50,7 +50,7 @@ class ExportLogsCommand implements ExportLogsCommandInterface
         $columns = $this->getColumns();
         $transformed = $this->transformData($logs, $columns);
         $csv = $this->buildLogsExportCsv($path, $transformed, $columns);
-        $csv->output($path);
+        // $csv->output($path);
         return $csv;
     }
 
