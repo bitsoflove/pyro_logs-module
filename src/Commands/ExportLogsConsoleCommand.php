@@ -17,6 +17,8 @@ class ExportLogsConsoleCommand extends Command
 
     public function handle()
     {
+        set_time_limit(0);
+
         $cmd = $this->getExportLogsCommand();
 
         $path = $this->getExportPath();
@@ -59,6 +61,13 @@ class ExportLogsConsoleCommand extends Command
                     continue;
                 }
                 if ($fileInfo->isFile() && time() - $fileInfo->getCTime() >= 60 * $minutes) {
+
+                    $fileName = $fileInfo->getFilename();
+                    if(starts_with($fileName, '.')) {
+                        // skip .gitignore
+                        continue;
+                    }
+
                     $success = unlink($fileInfo->getRealPath());
 
                     if(!$success) {
