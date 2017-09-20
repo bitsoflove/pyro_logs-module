@@ -30,9 +30,7 @@ class LogRepository extends EntryRepository implements LogRepositoryInterface
         if($event){
             $data = $data->where('event', '=', $event);
         }
-        if($toolversion){
-            //get data for toolversion
-        }
+        
         // dd($data->pluck('created_at')->map(function($item){return $item->format('d/m/y');}));
         return $data->get();
     }
