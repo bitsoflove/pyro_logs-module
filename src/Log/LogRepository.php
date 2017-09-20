@@ -24,14 +24,16 @@ class LogRepository extends EntryRepository implements LogRepositoryInterface
         $this->model = $model;
     }
 
-    public function getLogs($dateStart, $dateEnd , $event = null, $toolversion = null){
-       $data = $this->model->where('created_at', '>', (new Carbon($dateStart))->startOfDay())->where('created_at', '<', (new Carbon($dateEnd))->addDay());
-       if($event){
-           $data = $data->where('event', '=', $event);
-       }
-       if($toolversion){
-           //get data for toolversion
-       }
-       return $data->get();
+    public function getLogs( $dateStart,  $dateEnd , $event = null, $toolversion = null){
+
+        $data = $this->model->where('created_at', '>', $dateStart)->where('created_at', '<', $dateEnd);
+        if($event){
+            $data = $data->where('event', '=', $event);
+        }
+        if($toolversion){
+            //get data for toolversion
+        }
+        // dd($data->pluck('created_at')->map(function($item){return $item->format('d/m/y');}));
+        return $data->get();
     }
 }
