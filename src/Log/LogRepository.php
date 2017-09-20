@@ -2,6 +2,7 @@
 
 use Bitsoflove\LogsModule\Log\Contract\LogRepositoryInterface;
 use Anomaly\Streams\Platform\Entry\EntryRepository;
+use Carbon\Carbon;
 
 class LogRepository extends EntryRepository implements LogRepositoryInterface
 {
@@ -24,7 +25,7 @@ class LogRepository extends EntryRepository implements LogRepositoryInterface
     }
 
     public function getLogs($dateStart, $dateEnd , $event = null, $toolversion = null){
-       $data = $this->model->where('created_at', '>', $dateStart)->where('created_at', '<', $dateEnd);
+       $data = $this->model->where('created_at', '>', (new Carbon($dateStart))->startOfDay())->where('created_at', '<', (new Carbon($dateEnd))->addDay());
        if($event){
            $data = $data->where('event', '=', $event);
        }
